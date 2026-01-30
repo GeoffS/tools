@@ -22,10 +22,12 @@ firstLayerZ = 0.3;
 upperLayerZ = 0.2;
 bottomTwoLayersZ = firstLayerZ + upperLayerZ;
 
+makeItemModule = false;
+makeQuarterInchDia = false;
+
 //drillHoleDia = 3.96; // 5/32"
 //drillHoleDia = 4.76; // 3/16"
-drillHoleDia = 6.5; // 1/4"
-echo(str("drillHoleDia = ", drillHoleDia));
+// drillHoleDia = 6.5; // 1/4"
 
 // Comfortable hand-grip:
 baseOD = 25;
@@ -66,8 +68,41 @@ boltLengthInNut = 5.0; // "Tall" nyloc
 clampOffset = (boltLength - boltLengthInNut)/2;
 echo(str("clampOffset = ", clampOffset));
 
+module quarterInchDia()
+{
+	name="quaterinchDia";
+	topBanner(name);
+
+	classic(drillHoleDia=6.5); // 1/4"
+
+	bottomBanner(name);
+}
+
 module itemModule()
 {
+	name="itemModule";
+	topBanner(name);
+
+	classic(drillHoleDia=6.5); // 1/4"
+
+	bottomBanner(name);
+}
+
+module topBanner(name)
+{
+	echo(str("Module: ", name, " vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"));
+}
+
+module bottomBanner(name)
+{
+	echo(str("End: ", name, " ^^^^^^^^^^^^^^^^^^^^^^^^"));
+}
+
+module classic(drillHoleDia)
+{
+	
+	echo(str("drillHoleDia = ", drillHoleDia));
+
   difference()
   {
     exterior();
@@ -149,14 +184,13 @@ module clip()
 
 if(developmentRender)
 {
-	difference()
-	{
-		// ranslate([0,0,-baseZ/2]) itemModule();
-		itemModule();
-		clip();
-	}
+	// display() itemModule();
+
+	display() quarterInchDia();
+	display() translate([-50,0,0]) itemModule();
 }
 else
 {
-	itemModule();
+	if (makeItemModule) itemModule();
+	if(makeQuarterInchDia) quarterInchDia();
 }
