@@ -1,0 +1,3 @@
+[submodule "OpenSCAD_Lib"]
+	path = OpenSCAD_Lib
+	url = git@github.com:GeoffS/OpenSCAD_Lib.git
