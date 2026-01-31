@@ -52,7 +52,7 @@ flatEndSphereDia = baseOD+3;
 flatEndZ = sqrt((flatEndSphereDia/2)^2 - (flatEndFlatOD/2)^2);
 flatEndOffsetZ = flatEndZ;
 
-echo(str("boltPosZ = ", boltPosZ));
+// echo(str("boltPosZ = ", boltPosZ));
 echo(str("flatEndSphereDia = ", flatEndSphereDia));
 echo(str("flatEndOffsetZ = ", flatEndOffsetZ));
 
@@ -74,19 +74,19 @@ module quarterInchReamer()
 	name="quaterinchDia";
 	topBanner(name);
 
-	baseZ = 35;
-	classic(drillHoleDia=6.7, baseZ=baseZ, boltPosZ=baseZ/2-2);
+	baseZ = 40;
+	classic(drillHoleDia=6.7, baseZ=baseZ, boltPosZ=baseZ/2-2, toolRecessZ=35);
 
 	bottomBanner(name);
 }
 
 module quarterInchDrillBit()
 {
-	name="quaterinchDia";
+	name="quarterInchDrillBit";
 	topBanner(name);
 
-	baseZ = 25;
-	classic(drillHoleDia=6.5, baseZ=baseZ, boltPosZ=baseZ/2-2);
+	toolRecessZ = 25;
+	classic(drillHoleDia=6.5, baseZ=40, boltPosZ=toolRecessZ/2, toolRecessZ=toolRecessZ);
 
 	bottomBanner(name);
 }
@@ -102,7 +102,7 @@ module itemModule()
 
 	difference() 
 	{
-		classic(drillHoleDia=drillHoleDia, baseZ=40, boltPosZ=boltPosZ); // 1/4"
+		classic(drillHoleDia=drillHoleDia, baseZ=40, boltPosZ=boltPosZ, toolRecessZ=100); // 1/4"
 		
 		// Inset for the tool:
 		tcy([0,0,-100+insetZ], d=insetDia, h=100);
@@ -124,21 +124,25 @@ module bottomBanner(name)
 	echo(str("End: ", name, " ^^^^^^^^^^^^^^^^^^^^^^^^"));
 }
 
-module classic(drillHoleDia, baseZ, boltPosZ)
+module classic(drillHoleDia, baseZ, boltPosZ, toolRecessZ)
 {
-	
+	echo(str("boltPosZ = ", boltPosZ));
 	echo(str("drillHoleDia = ", drillHoleDia));
+	echo(str("toolRecessZ = ", toolRecessZ));
 
   difference()
   {
     exterior(baseZ=baseZ);
 
-    tcy([0,0,-100], d=drillHoleDia, h=200);
+	// Hole/Recess for the tool shank:
+	toolCZ = drillHoleDia/2;
+	toolZ = toolRecessZ + toolCZ;
+    translate([0,0,-1]) simpleChamferedCylinder(d=drillHoleDia, h=toolZ+1, cz=toolCZ);
 
-		// Cut a slot:
-		tcu([-0.25, 0, -10], [0.5, 100, 400]);
+	// Cut a slot:
+	tcu([-0.25, 0, -10], [0.5, 100, 400]);
 
-		boltHole(boltPosZ);
+	boltHole(boltPosZ);
   }
 }
 
@@ -205,9 +209,10 @@ module clip()
 if(developmentRender)
 {
 	// display() itemModule();
+	display() quarterInchDrillBit();
 
-	display() quarterInchReamer();
-	display() translate([ 50,0,0]) quarterInchDrillBit();
+	display() translate([ 50,0,0]) quarterInchReamer();
+	// display() translate([ 50,0,0]) quarterInchDrillBit();
 	display() translate([-50,0,0]) itemModule();
 }
 else
