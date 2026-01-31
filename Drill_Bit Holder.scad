@@ -42,11 +42,11 @@ flatEndFlatOD = 23; // 3/4" chamfer bit.
 // Inset params:
 insetDia = 19.5; // 3/4" chamfer bit
 insetZ = 10; // 3/4" chamfer bit
-bitShaftLen = 19; // 3/4" chamfer bit
+// bitShaftLen = 19; // 3/4" chamfer bit
 
 // Position of the clamp-bolt:
 //boltPosZ = baseZ/2; // Halfway, good for drill-bits.
-boltPosZ = insetZ + bitShaftLen/2; // For shorter items.
+// boltPosZ = insetZ + bitShaftLen/2; // For shorter items.
 
 flatEndSphereDia = baseOD+3;
 flatEndZ = sqrt((flatEndSphereDia/2)^2 - (flatEndFlatOD/2)^2);
@@ -74,7 +74,8 @@ module quarterInchReamer()
 	name="quaterinchDia";
 	topBanner(name);
 
-	classic(drillHoleDia=6.7, baseZ=35);
+	baseZ = 35;
+	classic(drillHoleDia=6.7, baseZ=baseZ, boltPosZ=baseZ/2-2);
 
 	bottomBanner(name);
 }
@@ -84,7 +85,8 @@ module quarterInchDrillBit()
 	name="quaterinchDia";
 	topBanner(name);
 
-	classic(drillHoleDia=6.5, baseZ=25);
+	baseZ = 25;
+	classic(drillHoleDia=6.5, baseZ=baseZ, boltPosZ=baseZ/2-2);
 
 	bottomBanner(name);
 }
@@ -95,10 +97,12 @@ module itemModule()
 	topBanner(name);
 
 	drillHoleDia = 6.5;
+	bitShaftLen = 19;
+	boltPosZ = insetZ + bitShaftLen/2;
 
 	difference() 
 	{
-		classic(drillHoleDia=drillHoleDia, baseZ=40); // 1/4"
+		classic(drillHoleDia=drillHoleDia, baseZ=40, boltPosZ=boltPosZ); // 1/4"
 		
 		// Inset for the tool:
 		tcy([0,0,-100+insetZ], d=insetDia, h=100);
@@ -120,7 +124,7 @@ module bottomBanner(name)
 	echo(str("End: ", name, " ^^^^^^^^^^^^^^^^^^^^^^^^"));
 }
 
-module classic(drillHoleDia, baseZ)
+module classic(drillHoleDia, baseZ, boltPosZ)
 {
 	
 	echo(str("drillHoleDia = ", drillHoleDia));
@@ -134,11 +138,11 @@ module classic(drillHoleDia, baseZ)
 		// Cut a slot:
 		tcu([-0.25, 0, -10], [0.5, 100, 400]);
 
-		boltHole();
+		boltHole(boltPosZ);
   }
 }
 
-module boltHole()
+module boltHole(boltPosZ)
 {
 	translate([0, baseOD/4+0.5, boltPosZ]) rotate([0,90,0])
 	{
@@ -195,7 +199,7 @@ module clip()
 {
 	//tc([-200, -200, baseZ/2], 400);
 	//tc([0, -200, -10], 400);
-	tc([-200, 0, -10], 400);
+	// tc([-200, 0, -10], 400);
 }
 
 if(developmentRender)
