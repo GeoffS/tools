@@ -91,6 +91,33 @@ module quarterInchDrillBit()
 	bottomBanner(name);
 }
 
+module quarterTwentyTap()
+{
+	name="quarterTwentyTap";
+	topBanner(name);
+
+	tapShankZ = 21;
+	tapShankDia = 5.6;
+
+	tapSquareEndDia = tapShankDia;
+	tapSquarteEndCZ = tapSquareEndDia/2;
+	tapSquareEndZ = 12 + tapSquarteEndCZ; // including chamfer
+
+	difference()
+	{
+		classic(drillHoleDia=0, baseZ=40, boltPosZ=tapShankZ/2, toolRecessZ=0);
+
+		hull()
+		{
+			translate([0,0,-1]) simpleChamferedCylinder(d=tapShankDia, h=tapShankZ+1, cz=tapShankDia/2);
+			translate([0,0,tapShankZ]) cylinder(d=tapSquareEndDia, h=0.1, $fn=4);
+		}
+		translate([0,0,tapShankZ]) simpleChamferedCylinder(d=tapSquareEndDia, h=tapSquareEndZ, cz=tapSquarteEndCZ, $fn=4);
+	}
+
+	bottomBanner(name);
+}
+
 module itemModule()
 {
 	name="itemModule";
@@ -203,17 +230,21 @@ module clip()
 {
 	//tc([-200, -200, baseZ/2], 400);
 	//tc([0, -200, -10], 400);
-	// tc([-200, 0, -10], 400);
+	tc([-200, 0, -10], 400);
 }
 
 if(developmentRender)
 {
 	// display() itemModule();
-	display() quarterInchDrillBit();
+	// display() quarterInchDrillBit();
+	display() quarterTwentyTap();
 
-	display() translate([ 50,0,0]) quarterInchReamer();
-	// display() translate([ 50,0,0]) quarterInchDrillBit();
-	display() translate([-50,0,0]) itemModule();
+	dx1 = 50;
+	dx = 30;
+	display() translate([dx1,0,0]) quarterInchReamer();
+	display() translate([dx1+1*dx,0,0]) quarterInchDrillBit();
+	display() translate([dx1+2*dx,0,0]) itemModule();
+	display() translate([dx1+3*dx,0,0]) quarterTwentyTap();
 }
 else
 {
