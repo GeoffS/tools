@@ -26,33 +26,18 @@ makeItemModule = false;
 makeQuarterInchDrillBit = false;
 makeQuarterInchReamer = false;
 
-//drillHoleDia = 3.96; // 5/32"
-//drillHoleDia = 4.76; // 3/16"
-// drillHoleDia = 6.5; // 1/4"
-
 // Comfortable hand-grip:
 baseOD = 25;
-// baseZ = 40;
 knurlXY = 3;
 
 // Diameter of the flat-end on the bottom:
 //flatEndFlatOD = 20; // Good in general, and for 19mm chamfer.
 flatEndFlatOD = 23; // 3/4" chamfer bit.
 
-// Inset params:
-insetDia = 19.5; // 3/4" chamfer bit
-insetZ = 10; // 3/4" chamfer bit
-// bitShaftLen = 19; // 3/4" chamfer bit
-
-// Position of the clamp-bolt:
-//boltPosZ = baseZ/2; // Halfway, good for drill-bits.
-// boltPosZ = insetZ + bitShaftLen/2; // For shorter items.
-
 flatEndSphereDia = baseOD+3;
 flatEndZ = sqrt((flatEndSphereDia/2)^2 - (flatEndFlatOD/2)^2);
 flatEndOffsetZ = flatEndZ;
 
-// echo(str("boltPosZ = ", boltPosZ));
 echo(str("flatEndSphereDia = ", flatEndSphereDia));
 echo(str("flatEndOffsetZ = ", flatEndOffsetZ));
 
@@ -60,14 +45,6 @@ echo(str("flatEndOffsetZ = ", flatEndOffsetZ));
 nutRecessSide = M3_squareNutSide;
 headRecessDia = M3_socketHeadRecesssDia;
 holeDia = M3_holeDia;
-
-/* boltLength = 18.2; // Measured 6-32 3/4" */
-boltLength = 25.0; // Measured 6-32 1"
-
-boltLengthInNut = 5.0; // "Tall" nyloc
-
-clampOffset = (boltLength - boltLengthInNut)/2;
-echo(str("clampOffset = ", clampOffset));
 
 module quarterInchReamer()
 {
@@ -123,6 +100,8 @@ module itemModule()
 	name="itemModule";
 	topBanner(name);
 
+	insetDia = 19.5; // 3/4" chamfer bit
+	insetZ = 10; // 3/4" chamfer bit
 	drillHoleDia = 6.5;
 	bitShaftLen = 19;
 	boltPosZ = insetZ + bitShaftLen/2;
@@ -230,7 +209,7 @@ module clip()
 {
 	//tc([-200, -200, baseZ/2], 400);
 	//tc([0, -200, -10], 400);
-	tc([-200, 0, -10], 400);
+	// tc([-200, 0, -10], 400);
 }
 
 if(developmentRender)
