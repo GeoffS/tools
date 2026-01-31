@@ -23,7 +23,8 @@ upperLayerZ = 0.2;
 bottomTwoLayersZ = firstLayerZ + upperLayerZ;
 
 makeItemModule = false;
-makeQuarterInchDia = false;
+makeQuarterInchDrillBit = false;
+makeQuarterInchReamer = false;
 
 //drillHoleDia = 3.96; // 5/32"
 //drillHoleDia = 4.76; // 3/16"
@@ -31,7 +32,7 @@ makeQuarterInchDia = false;
 
 // Comfortable hand-grip:
 baseOD = 25;
-baseZ = 40;
+// baseZ = 40;
 knurlXY = 3;
 
 // Diameter of the flat-end on the bottom:
@@ -68,12 +69,22 @@ boltLengthInNut = 5.0; // "Tall" nyloc
 clampOffset = (boltLength - boltLengthInNut)/2;
 echo(str("clampOffset = ", clampOffset));
 
-module quarterInchDia()
+module quarterInchReamer()
 {
 	name="quaterinchDia";
 	topBanner(name);
 
-	classic(drillHoleDia=6.5); // 1/4"
+	classic(drillHoleDia=6.7, baseZ=35);
+
+	bottomBanner(name);
+}
+
+module quarterInchDrillBit()
+{
+	name="quaterinchDia";
+	topBanner(name);
+
+	classic(drillHoleDia=6.5, baseZ=25);
 
 	bottomBanner(name);
 }
@@ -83,7 +94,18 @@ module itemModule()
 	name="itemModule";
 	topBanner(name);
 
-	classic(drillHoleDia=6.5); // 1/4"
+	drillHoleDia = 6.5;
+
+	difference() 
+	{
+		classic(drillHoleDia=drillHoleDia, baseZ=40); // 1/4"
+		
+		// Inset for the tool:
+		tcy([0,0,-100+insetZ], d=insetDia, h=100);
+	}
+
+	// Sacrificial layer at bottom of inset:
+	tcy([0,0, insetZ], d=drillHoleDia+1, h=upperLayerZ);
 
 	bottomBanner(name);
 }
@@ -98,14 +120,14 @@ module bottomBanner(name)
 	echo(str("End: ", name, " ^^^^^^^^^^^^^^^^^^^^^^^^"));
 }
 
-module classic(drillHoleDia)
+module classic(drillHoleDia, baseZ)
 {
 	
 	echo(str("drillHoleDia = ", drillHoleDia));
 
   difference()
   {
-    exterior();
+    exterior(baseZ=baseZ);
 
     tcy([0,0,-100], d=drillHoleDia, h=200);
 
@@ -114,9 +136,6 @@ module classic(drillHoleDia)
 
 		boltHole();
   }
-
-  // Sacrificial layer at bottom of inset:
-  tcy([0,0, insetZ], d=drillHoleDia+1, h=upperLayerZ);
 }
 
 module boltHole()
@@ -132,10 +151,10 @@ module boltHole()
 	}
 }
 
-module exterior()
+module exterior(baseZ)
 {
-  difference()
-  {
+	difference()
+	{
 		union()
 		{
 			cylinder(d=baseOD, h=baseZ);
@@ -169,28 +188,27 @@ module exterior()
 			tcy([0,0,-100], d=100, h=100);
 			tsp([0,0,0], d=flatEndSphereDia);
 		}
-
-    // Inset for the tool:
-    tcy([0,0,-100+insetZ], d=insetDia, h=100);
-  }
+	}
 }
 
 module clip()
 {
 	//tc([-200, -200, baseZ/2], 400);
 	//tc([0, -200, -10], 400);
-  //tc([-200, 0, -10], 400);
+	tc([-200, 0, -10], 400);
 }
 
 if(developmentRender)
 {
 	// display() itemModule();
 
-	display() quarterInchDia();
+	display() quarterInchReamer();
+	display() translate([ 50,0,0]) quarterInchDrillBit();
 	display() translate([-50,0,0]) itemModule();
 }
 else
 {
 	if (makeItemModule) itemModule();
-	if(makeQuarterInchDia) quarterInchDia();
+	if(makeQuarterInchDrillBit) quarterInchDrillBit();
+	if(makeQuarterInchReamer) quarterInchReamer();
 }
