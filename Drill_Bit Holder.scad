@@ -25,6 +25,7 @@ bottomTwoLayersZ = firstLayerZ + upperLayerZ;
 makeItemModule = false;
 makeQuarterInchDrillBit = false;
 makeQuarterInchReamer = false;
+makeQuarterTwentyTap = false;
 
 // Comfortable hand-grip:
 baseOD = 25;
@@ -73,12 +74,12 @@ module quarterTwentyTap()
 	name="quarterTwentyTap";
 	topBanner(name);
 
-	tapShankZ = 21;
-	tapShankDia = 5.6;
+	tapShankZ = 25;
+	tapShankDia = 5.8;
 
-	tapSquareEndDia = tapShankDia;
+	tapSquareEndDia = 6.1; //tapShankDia;
 	tapSquarteEndCZ = tapSquareEndDia/2;
-	tapSquareEndZ = 12 + tapSquarteEndCZ; // including chamfer
+	tapSquareEndZ = 10 + tapSquarteEndCZ; // including chamfer
 
 	difference()
 	{
@@ -87,7 +88,7 @@ module quarterTwentyTap()
 		hull()
 		{
 			translate([0,0,-1]) simpleChamferedCylinder(d=tapShankDia, h=tapShankZ+1, cz=tapShankDia/2);
-			translate([0,0,tapShankZ]) cylinder(d=tapSquareEndDia, h=0.1, $fn=4);
+			#translate([0,0,tapShankZ]) cylinder(d=tapSquareEndDia, h=0.1, $fn=4);
 		}
 		translate([0,0,tapShankZ]) simpleChamferedCylinder(d=tapSquareEndDia, h=tapSquareEndZ, cz=tapSquarteEndCZ, $fn=4);
 	}
@@ -209,7 +210,8 @@ module clip()
 {
 	//tc([-200, -200, baseZ/2], 400);
 	//tc([0, -200, -10], 400);
-	// tc([-200, 0, -10], 400);
+	tc([-200, 0, -10], 400);
+	// tcy([0,0,24], d=200, h=400);
 }
 
 if(developmentRender)
@@ -230,4 +232,5 @@ else
 	if (makeItemModule) itemModule();
 	if(makeQuarterInchDrillBit) quarterInchDrillBit();
 	if(makeQuarterInchReamer) quarterInchReamer();
+	if(makeQuarterTwentyTap) quarterTwentyTap();
 }
